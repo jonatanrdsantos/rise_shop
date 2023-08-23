@@ -71,6 +71,14 @@ defmodule RiseShopWeb.Router do
       on_mount: [{RiseShopWeb.AdminAuth, :ensure_authenticated}] do
       live "/admins/settings", AdminSettingsLive, :edit
       live "/admins/settings/confirm_email/:token", AdminSettingsLive, :confirm_email
+
+      live "/catalog_products", ProductLive.Index, :index
+      live "/catalog_products/new", ProductLive.Index, :new
+      live "/catalog_products/:id/edit", ProductLive.Index, :edit
+
+      live "/catalog_products/:id", ProductLive.Show, :show
+      live "/catalog_products/:id/show/edit", ProductLive.Show, :edit
+
     end
   end
 
