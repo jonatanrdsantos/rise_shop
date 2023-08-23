@@ -1,0 +1,40 @@
+version: "3.8"
+
+volumes:
+  pg_data:
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    command: "mix phx.server"
+    volumes:
+      - .:/app
+    ports:
+      - "7722:7722"
+    env_file: .env
+    depends_on:
+      - postgres
+    networks:
+      - rise_shop
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: rise_shop
+      POSTGRES_PASSWORD: rise_shop
+      POSTGRES_DB: rise_shop_dev
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5421:5421"
+    networks:
+      rise_shop:
+        aliases:
+          - rise_shop_db
+
+networks:
+  rise_shop:
+      name: rise_shop_network
