@@ -35,4 +35,56 @@ defmodule RiseShopWeb.ConnCase do
     RiseShop.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
+
+  @doc """
+  Setup helper that registers and logs in admins.
+
+      setup :register_and_log_in_admin
+
+  It stores an updated connection and a registered admin in the
+  test context.
+  """
+  def register_and_log_in_admin(%{conn: conn}) do
+    admin = RiseShop.BackofficeFixtures.admin_fixture()
+    %{conn: log_in_admin(conn, admin), admin: admin}
+  end
+
+  @doc """
+  Logs the given `admin` into the `conn`.
+
+  It returns an updated `conn`.
+  """
+  def log_in_admin(conn, admin) do
+    token = RiseShop.Backoffice.generate_admin_session_token(admin)
+
+    conn
+    |> Phoenix.ConnTest.init_test_session(%{})
+    |> Plug.Conn.put_session(:admin_token, token)
+  end
+
+  @doc """
+  Setup helper that registers and logs in customers.
+
+      setup :register_and_log_in_customer
+
+  It stores an updated connection and a registered customer in the
+  test context.
+  """
+  def register_and_log_in_customer(%{conn: conn}) do
+    customer = RiseShop.StoreFixtures.customer_fixture()
+    %{conn: log_in_customer(conn, customer), customer: customer}
+  end
+
+  @doc """
+  Logs the given `customer` into the `conn`.
+
+  It returns an updated `conn`.
+  """
+  def log_in_customer(conn, customer) do
+    token = RiseShop.Store.generate_customer_session_token(customer)
+
+    conn
+    |> Phoenix.ConnTest.init_test_session(%{})
+    |> Plug.Conn.put_session(:customer_token, token)
+  end
 end
